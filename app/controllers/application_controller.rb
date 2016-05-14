@@ -6,9 +6,22 @@ class ApplicationController < ActionController::Base
 
 
 def buscar
-  @tags = HTTParty.get('https://api.instagram.com/v1/tags/'+ params[:tag] +'/media/recent?access_token=9994244.1fb234f.8893dfbb48d840aab8ea4b3e92be20e7')
+  @tags_json = HTTParty.get('https://api.instagram.com/v1/tags/'+ params[:tag] +'/media/recent?access_token=9994244.1fb234f.8893dfbb48d840aab8ea4b3e92be20e7&count=2')
+  @tags_count = HTTParty.get('https://api.instagram.com/v1/tags/' + params[:tag]+ '?access_token=9994244.1fb234f.8893dfbb48d840aab8ea4b3e92be20e7')["data"]["media_count"]
+  @tags = JSON.parse(@tags_json.body)
+
+  @new_tags = []
   if(@tags != nil)
-    render status: 200, json: @tags["data"]
+    @tags["data"].each do |tag|
+      @new_tag = {
+          tags: tag["tags"],
+          username: tag["user"]["username"],
+          likes: tag["likes"]["count"],
+          caption: tag["caption"]["text"]
+      }
+      @new_tags << @new_tag
+    end
+    render status: 200, json: {metadata: {total: @tags_count}, posts: @new_tags}
   else
     render status: 404
   end
