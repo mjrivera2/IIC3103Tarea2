@@ -21,7 +21,7 @@ def buscar
       }
       @new_tags << @new_tag
     end
-    render status: 200, json: {metadata: {total: @tags_count}, posts: @new_tags}
+    render status: 200, json: {metadata: {total: @tags_count}, posts: @new_tags, version: "0.1.0"}
   else
     render status: 404
   end
