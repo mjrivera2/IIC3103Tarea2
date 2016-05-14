@@ -9,7 +9,8 @@ development:
 
 test:
   <<: *default
-  database: tarea2_test
+  database: travis_ci_test
+  username: postgres
 
 production:
   <<: *default
